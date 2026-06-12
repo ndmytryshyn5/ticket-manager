@@ -13,5 +13,32 @@ def add_worker(data: AddWorker, db: Session = Depends(get_db)):
     try:
         return WorkersService.add_new_worker_logic(data, db)
     except Exception as e:
-        print(f"Error occurred: {e}")
         raise HTTPException(status_code=400)
+    
+@router.get("/")
+def get_all_workers(db: Session = Depends(get_db)):
+    try:
+        return WorkersService.get_all_workers_info_logic(db)
+    except Exception as e:
+        raise HTTPException(status_code=400)
+    
+@router.get("/{id}")
+def get_worker_by_id(id: int, db: Session = Depends(get_db)):
+    try:
+        return WorkersService.get_worker_by_id(id, db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/get_by_name")
+def get_worker_by_name(name: str, db: Session = Depends(get_db)):
+    try:
+        return WorkersService.get_worker_info_by_name(name, db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.delete("/{id}")
+def delete_worker_by_id(id: int, db: Session = Depends(get_db)):
+    try:
+        return WorkersService.delete_worker_by_id(id, db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

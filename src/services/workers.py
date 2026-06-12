@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.db.queries import get_all_workers
+from src.db.queries import get_all_workers, get_worker_by_name, get_worker_by_id
 from src.models.workers import Workers
 
 class WorkersService:
@@ -19,7 +19,37 @@ class WorkersService:
         return worker
 
 
+    @staticmethod
+    def get_all_workers_info_logic(db: Session):
+        all_workers = get_all_workers(db)
 
-    # @staticmethod
-    # def get_workers_info_logic(worker: Workers, db: Session):
-    #     all_workers = get_all_workers(worker,)
+        return all_workers
+    
+    @staticmethod
+    def get_worker_by_id(id, db: Session):
+        worker = get_worker_by_id(id, db)
+        if not worker:
+            return "Worker not found"
+        else:
+            return worker
+    
+    @staticmethod
+    def get_worker_info_by_name(name, db: Session):
+        worker = get_worker_by_name(name, db)
+        if not worker:
+            return "Worker not found"
+        else:
+            return worker
+    
+    @staticmethod
+    def delete_worker_by_id(id, db: Session):
+        worker = get_worker_by_id(id, db)
+        if not worker:
+            return "Worker not found"
+        else:
+            db.delete(worker)
+            db.commit()
+
+            return{
+                "status": "deleted"
+            }
