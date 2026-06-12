@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.models.workers import Workers
-from src.schemas.workers import AddWorker
+from src.schemas.workers import AddWorker, ChangeWorkerRole
 from src.db.dependency import get_db
 from src.services.workers import WorkersService
 
@@ -40,5 +40,12 @@ def get_worker_by_name(name: str, db: Session = Depends(get_db)):
 def delete_worker_by_id(id: int, db: Session = Depends(get_db)):
     try:
         return WorkersService.delete_worker_by_id(id, db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.patch("/change_role/{id}")
+def change_worker_role(id:int, data: ChangeWorkerRole, db: Session = Depends(get_db)):
+    try:
+        return WorkersService.change_worker_role(id, data, db)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

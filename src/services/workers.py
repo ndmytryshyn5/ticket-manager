@@ -53,3 +53,13 @@ class WorkersService:
             return{
                 "status": "deleted"
             }
+        
+    def change_worker_role(id:int, data, db: Session):
+        worker = get_worker_by_id(id, db)
+        if not worker:
+            return "Worker not found"
+        else:
+            worker.worker_role = data.new_role
+
+            db.commit()
+            db.refresh(worker)
