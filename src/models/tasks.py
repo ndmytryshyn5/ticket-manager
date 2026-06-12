@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from src.db.base import Base
 
+
 class Tasks(Base):
     __tablename__ = 'tasks'
 
@@ -12,4 +13,4 @@ class Tasks(Base):
     status: Column = Column(String, nullable=False, default="open")
     assigned_worker_id: Column = Column(Integer, ForeignKey('workers.id'), nullable=True)
 
-    worker = relationship("Worker", back_populates="tasks")
+    worker = relationship("Workers", back_populates="tasks")

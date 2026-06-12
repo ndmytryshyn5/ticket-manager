@@ -3,11 +3,13 @@ from sqlalchemy.orm import relationship
 
 from src.db.base import Base
 
+
 class Workers(Base):
     __tablename__ = 'workers'
 
     id: Column = Column(Integer, primary_key=True)
     worker_name: Column = Column(String, nullable=False)
-    role: Column = Column(String, nullable=False)
+    worker_role: Column = Column(String, nullable=False)
+    assigned_tasks: Column = Column(Integer, nullable=False, default=0)
 
-    tasks = relationship("Task", back_populates="worker")
+    tasks = relationship("Tasks", back_populates="worker")
