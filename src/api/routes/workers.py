@@ -8,19 +8,20 @@ from src.services.workers import WorkersService
 
 router: APIRouter = APIRouter()
 
-@router.post("/add")
-def add_worker(data: AddWorker, db: Session = Depends(get_db)):
-    try:
-        return WorkersService.add_new_worker_logic(data, db)
-    except Exception as e:
-        raise HTTPException(status_code=400)
-    
 @router.get("/")
 def get_all_workers(db: Session = Depends(get_db)):
     try:
         return WorkersService.get_all_workers_info_logic(db)
     except Exception as e:
-        raise HTTPException(status_code=400)
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.post("/add")
+def add_worker(data: AddWorker, db: Session = Depends(get_db)):
+    try:
+        return WorkersService.add_new_worker_logic(data, db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
     
 @router.get("/{id}")
 def get_worker_by_id(id: int, db: Session = Depends(get_db)):

@@ -26,3 +26,6 @@ class CreateTask(BaseModel):
 
 class ChangeTaskStatus(BaseModel):
     new_status: str
+
+class AssignWorker(BaseModel):
+    worker_id: int
