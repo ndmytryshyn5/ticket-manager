@@ -14,8 +14,19 @@ class TasksService:
     @staticmethod
     def get_task_info_by_id(id: int, db: Session):
         task = get_task_by_id(id, db)
+        if not task:
+            return "Task not found"
+        
+        worker = get_worker_by_id(task.assigned_worker_id, db) if task.assigned_worker_id else None
+        
+        return {
+            "id": task.id,
+            "task_description": task.task_description,
+            "deadline": task.deadline,
+            "status": task.status,
+            "assigned_worker": worker.worker_name if worker else None
+        }
 
-        return task
 
     @staticmethod
     def create_new_task_logic(data, db: Session):
