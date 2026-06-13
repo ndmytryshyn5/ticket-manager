@@ -51,7 +51,8 @@ class WorkersService:
             db.commit()
 
             return{
-                "status": "deleted"
+                "status": "deleted",
+                "message": f"{worker.worker_name} deleted"
             }
         
     def change_worker_role(id:int, data, db: Session):
@@ -63,3 +64,8 @@ class WorkersService:
 
             db.commit()
             db.refresh(worker)
+
+        return{
+            "status": "success",
+            "message": f"Role for {worker.worker_name} changed to {data.new_role}"
+        }
