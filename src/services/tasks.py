@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.db.queries import get_worker_by_id, get_all_tasks, get_task_by_id
 from src.models.tasks import Tasks
+from src.core.exceptions import task_not_found, worker_not_found
 
 class TasksService:
 
@@ -15,7 +16,7 @@ class TasksService:
     def get_task_info_by_id(id: int, db: Session):
         task = get_task_by_id(id, db)
         if not task:
-            return "Task not found"
+            raise task_not_found
         
         worker = get_worker_by_id(task.assigned_worker_id, db) if task.assigned_worker_id else None
         
@@ -47,7 +48,7 @@ class TasksService:
     def change_task_status(id: int, data, db: Session):
         task = get_task_by_id(id, db)
         if not task:
-            return "Task not found"
+            raise task_not_found
         
         task.status = data.new_status
 
@@ -65,10 +66,10 @@ class TasksService:
         task = get_task_by_id(id, db)
         worker = get_worker_by_id(data.worker_id, db)
         if not task:
-            return "Task not found"
+            raise task_not_found
         
         if not worker:
-            return "Worker not found"
+            raise worker_not_found
         
         task.assigned_worker_id = data.worker_id
 

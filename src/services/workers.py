@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.db.queries import get_all_workers, get_worker_by_name, get_worker_by_id
 from src.models.workers import Workers
+from src.core.exceptions import worker_not_found
 
 class WorkersService:
 
@@ -28,7 +29,7 @@ class WorkersService:
     def get_worker_by_id(id, db: Session):
         worker = get_worker_by_id(id, db)
         if not worker:
-            return "Worker not found"
+            raise worker_not_found
         
         return worker
     
@@ -36,7 +37,7 @@ class WorkersService:
     def get_worker_info_by_name(name, db: Session):
         worker = get_worker_by_name(name, db)
         if not worker:
-            return "Worker not found"
+            raise worker_not_found
         
         return worker
     
@@ -44,7 +45,7 @@ class WorkersService:
     def delete_worker_by_id(id, db: Session):
         worker = get_worker_by_id(id, db)
         if not worker:
-            return "Worker not found"
+            raise worker_not_found
         
         db.delete(worker)
         db.commit()
@@ -53,7 +54,8 @@ class WorkersService:
             "status": "deleted",
             "message": f"{worker.worker_name} deleted"
         }
-        
+
+    @staticmethod
     def change_worker_role(id:int, data, db: Session):
         worker = get_worker_by_id(id, db)
         if not worker:
