@@ -8,9 +8,16 @@ class WorkersService:
 
     @staticmethod
     def get_all_workers_info_logic(db: Session):
-        all_workers = get_all_workers(db)
+        workers = get_all_workers(db)
 
-        return all_workers
+        return [
+            {
+                "id": worker.id,
+                "worker_name": worker.worker_name,
+                "worker_role": worker.worker_role
+            }
+            for worker in workers
+        ]
     
     @staticmethod
     def add_new_worker_logic(data, db: Session):
@@ -23,7 +30,11 @@ class WorkersService:
         db.commit()
         db.refresh(worker)
 
-        return worker
+        return {
+            "id": worker.id,
+            "worker_name": worker.worker_name,
+            "worker_role": worker.worker_role
+        }
 
     @staticmethod
     def get_worker_by_id(id, db: Session):
@@ -31,15 +42,26 @@ class WorkersService:
         if not worker:
             raise worker_not_found
         
-        return worker
+        return {
+            "id": worker.id,
+            "worker_name": worker.worker_name,
+            "worker_role": worker.worker_role
+        }
     
     @staticmethod
     def get_worker_info_by_name(name, db: Session):
-        worker = get_worker_by_name(name, db)
-        if not worker:
+        workers = get_worker_by_name(name, db)
+        if not workers:
             raise worker_not_found
         
-        return worker
+        return [
+        {
+            "id": worker.id,
+            "worker_name": worker.worker_name,
+            "worker_role": worker.worker_role
+        }
+        for worker in workers
+    ]
     
     @staticmethod
     def delete_worker_by_id(id, db: Session):
@@ -50,9 +72,9 @@ class WorkersService:
         db.delete(worker)
         db.commit()
 
-        return{
+        return {
             "status": "deleted",
-            "message": f"{worker.worker_name} deleted"
+            "deleted_worker": worker.worker_name
         }
 
     @staticmethod
@@ -66,7 +88,8 @@ class WorkersService:
         db.commit()
         db.refresh(worker)
 
-        return{
+        return {
             "status": "success",
-            "message": f"Role for {worker.worker_name} changed to {data.new_role}"
+            "worker": worker.worker_name,
+            "new_role": worker.worker_role
         }

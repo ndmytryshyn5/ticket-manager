@@ -8,9 +8,18 @@ class TasksService:
 
     @staticmethod
     def get_all_tasks_info(db: Session):
-        all_tasks = get_all_tasks(db)
+        tasks = get_all_tasks(db)
 
-        return all_tasks
+        return [
+            {
+                "id": task.id,
+                "task_description": task.task_description,
+                "deadline": task.deadline,
+                "status": task.status,
+                "assigned_worker_id": task.assigned_worker_id
+            }
+            for task in tasks
+        ]
     
     @staticmethod
     def get_task_info_by_id(id: int, db: Session):
@@ -41,7 +50,14 @@ class TasksService:
         db.add(task)
         db.commit()
         db.refresh(task)
-        return task
+
+        return {
+            "id": task.id,
+            "task_description": task.task_description,
+            "deadline": task.deadline,
+            "status": task.status,
+            "assigned_worker_id": task.assigned_worker_id
+        }
     
     
     @staticmethod
@@ -79,7 +95,8 @@ class TasksService:
         db.refresh(task)
         db.refresh(worker)
 
-        return{
+        return {
             "status": "success",
-            "message": f"{worker.worker_name} assigned to task {task.id}"
+            "assigned_task_id": task.id,
+            "assigned_worker": worker.worker_name
         }
